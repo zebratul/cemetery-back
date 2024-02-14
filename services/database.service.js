@@ -1,5 +1,22 @@
 const dbsConfig = require("../config").dbs;
 const logger = require("./logger.service")(module);
+require('dotenv').config();
+const { Sequelize } = require('sequelize');
+
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  dialectOptions: {
+      ssl: {
+          require: true,
+          rejectUnauthorized: false,
+      },
+  },
+  define: {
+      timestamps: true,
+      underscored: true,
+  },
+  logging: (msg) => logger.debug(msg),
+});
 
 /**
  * Базовый класс сервиса работы с базой данных
@@ -58,4 +75,4 @@ class Database {
 
 const sampleDB = new Database(dbsConfig.sample_db);
 
-module.exports = { sampleDB };
+module.exports = { sampleDB, sequelize };
