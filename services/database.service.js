@@ -59,6 +59,7 @@ class Database {
   get sequelize() {
     return this.#sequelize;
   }
+
 }
 
 module.exports = { Database };

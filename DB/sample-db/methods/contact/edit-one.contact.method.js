@@ -1,4 +1,4 @@
-const { getOne } = require("./get-one.contact.method");
+const { Contact } = require("../../schemas");
 
 /**
  * Редактирует данные контакта с указанным идентификатором
@@ -7,16 +7,22 @@ const { getOne } = require("./get-one.contact.method");
  * @param {Object} data
  * @return {Object}
  */
-function editOne(id, data) {
-  const mock = getOne(id);
+async function editOne(id, data) {
+  try {
+    const [updateCount, updatedContacts] = await Contact.update(data, {
+      where: { id },
+      returning: true,
+    });
 
-  const updated = { ...mock };
-  Object.keys(data).forEach((key) => {
-    updated[`${key}`] = data[`${key}`];
-  });
-  updated.updatedAt = new Date();
+    if (updateCount === 0) {
+      return null;
+    }
 
-  return updated;
+    return updatedContacts.dataValues;
+  } catch (error) {
+    console.error(`Failed to update contact with id ${id}:`, error);
+    throw error;
+  }
 }
 
 module.exports = { editOne };

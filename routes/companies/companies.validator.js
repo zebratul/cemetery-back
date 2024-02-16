@@ -4,6 +4,7 @@ const { UnprocessableEntity } = require("../../constants/errors");
 const validate = require("../../middleware/validation.middleware");
 const logger = require("../../services/logger.service")(module);
 const imageService = require("../../services/image.service");
+const { query } = require("express-validator");
 
 const getOne = [
   check("id").isNumeric().withMessage({
@@ -69,4 +70,14 @@ const removeImage = [
   validate,
 ];
 
-module.exports = { getOne, editOne, addImage, removeImage };
+const getSortedList = [
+  query("status").optional().isString().withMessage("Status must be a string"),
+  query("type").optional().isString().withMessage("Type must be a string"),
+  query("sortBy").optional().isString().withMessage("SortBy must be a string"),
+  query("sortOrder").optional().isIn(['ASC', 'DESC']).withMessage("SortOrder must be 'ASC' or 'DESC'"),
+  query("page").optional().isNumeric().withMessage("Page must be a number"),
+  query("pageSize").optional().isNumeric().withMessage("PageSize must be a number"),
+  validate,
+];
+
+module.exports = { getOne, editOne, addImage, removeImage, getSortedList }; 

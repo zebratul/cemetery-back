@@ -34,3 +34,5 @@ process.on("uncaughtException", async (error) => {
   logger.error(`Uncaught exception! ${error.message}`);
   logger.shutdown(() => process.exit(1));
 });
+
+module.exports = { database };

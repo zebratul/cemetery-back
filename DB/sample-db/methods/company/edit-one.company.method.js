@@ -1,22 +1,24 @@
-const { getOne } = require("./get-one.company.method");
+const { Company } = require("../../schemas");
 
 /**
- * Редактирует данные компании с указанным идентификатором
- * и возвращает результат.
- * @param {string} id
+ * Редактирует данные компании с указанным идентификатором и возвращает результат.
+ * @param {string|number} id
  * @param {Object} data
- * @return {Object}
+ * @return {Promise<Object>} - A promise that resolves to the updated company object.
  */
-function editOne(id, data) {
-  const mock = getOne(id);
+async function editOne(id, data) {
+  try {
+    const company = await Company.findByPk(id);
+    if (!company) {
+      throw new Error(`Company with id ${id} not found.`);
+    }
 
-  const updated = { ...mock };
-  Object.keys(data).forEach((key) => {
-    updated[`${key}`] = data[`${key}`];
-  });
-  updated.updatedAt = new Date();
-
-  return updated;
+    await company.update(data);
+    return company.dataValues; // Using .dataValues for the updated company object
+  } catch (error) {
+    console.error(`Failed to update company with id ${id}:`, error);
+    throw error;
+  }
 }
 
 module.exports = { editOne };

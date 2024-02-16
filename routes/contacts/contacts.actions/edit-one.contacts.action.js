@@ -1,6 +1,6 @@
 const logger = require("../../../services/logger.service")(module);
 const { OK } = require("../../../constants/http-codes");
-const contactMethods = require("../../../DB/sample-db/methods/contact");
+const contactMethods = require("../../../DB/sample-db/methods/contact/edit-one.contact.method");
 const { NotFound } = require("../../../constants/errors");
 
 /**
@@ -15,15 +15,18 @@ async function editOne(req, res) {
   const { id } = req.params;
   const data = req.body;
 
-  const contact = contactMethods.getOne(id);
-  if (!contact) {
-    throw new NotFound("Contact not found");
+  try {
+    const updatedContact = await contactMethods.editOne(id, data);
+    if (!updatedContact) {
+      throw new NotFound("Contact not found");
+    }
+
+    res.status(OK).json(updatedContact);
+    logger.success();
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-
-  const updated = contactMethods.editOne(id, data);
-
-  res.status(OK).json(updated);
-  logger.success();
 }
 
 module.exports = {

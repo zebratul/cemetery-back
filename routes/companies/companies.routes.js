@@ -8,6 +8,7 @@ const fileHandler = multer({ dest: config.images.uploadsDir });
 
 module.exports = Router()
   .get("/companies/:id", ...validator.getOne, actions.getOne)
+  .get("/companies/sorted-list", ...validator.getSortedList, actions.getSortedList)
   .patch("/companies/:id", ...validator.editOne, actions.editOne)
   .post(
     "/companies/:id/image",

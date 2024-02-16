@@ -1,21 +1,13 @@
-/**
- * Возвращает данные контакта с указанным идентификатором.
- * @param {string} id
- * @return {Object|null}
- */
-function getOne(id) {
-  const mock = {
-    id: 16,
-    lastname: "Григорьев",
-    firstname: "Сергей",
-    patronymic: "Петрович",
-    phone: "79162165588",
-    email: "grigoriev@funeral.com",
-    createdAt: "2020-11-21T08:03:26.589Z",
-    updatedAt: "2020-11-23T09:30:00Z",
-  };
+const { Contact } = require("../../schemas");
 
-  return parseInt(id, 10) === mock.id ? mock : null;
+async function getOne(id) {
+  try {
+    const contact = await Contact.findByPk(id);
+    return contact ? contact.dataValues : null;
+  } catch (error) {
+    console.error(`Failed to fetch contact with id ${id}:`, error);
+    throw error;
+  }
 }
 
 module.exports = { getOne };
